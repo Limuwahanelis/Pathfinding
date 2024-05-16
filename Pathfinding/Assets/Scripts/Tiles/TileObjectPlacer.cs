@@ -4,16 +4,24 @@ using UnityEngine;
 
 public class TileObjectPlacer : MonoBehaviour
 {
+    public bool IsGoalPlaced=>_isGoalPlaced;
+    public bool IsStartPlaced=>_isStartPlaced;
+    public PathTargetTile GoalTile=>_goalTile;
+    public PathTargetTile StartTile=>_startTile;
     [SerializeField] TileSelection _tileSelector;
     [SerializeField] TileType _startTileType;
     [SerializeField] TileType _goalTileType;
-    [SerializeField] GameObject _goalTile;
-    [SerializeField] GameObject _startTile;
+    [SerializeField] PathTargetTile _goalTile;
+    [SerializeField] PathTargetTile _startTile;
     [SerializeField] ObstaclePool _obstaclePool;
     private TileType _tileToPlace;
+    private bool _isGoalPlaced;
+    private bool _isStartPlaced;
     // Start is called before the first frame update
     void Start()
     {
+        _goalTile.OnTileRemoved.AddListener(RemoveGoalTile);
+        _startTile.OnTileRemoved.AddListener(RemoveStartTile);
         _tileToPlace = _goalTileType;
     }
 
@@ -39,12 +47,14 @@ public class TileObjectPlacer : MonoBehaviour
         if (_tileToPlace == _goalTileType)
         {
             _goalTile.transform.position = _tileSelector.SelectedTilePos;
-            _goalTile.SetActive(true);
+            _goalTile.gameObject.SetActive(true);
+            _isGoalPlaced = true;
         }
         else if (_tileToPlace == _startTileType) 
         {
             _startTile.transform.position = _tileSelector.SelectedTilePos;
-            _startTile.SetActive(true);
+            _startTile.gameObject.SetActive(true);
+            _isStartPlaced = true;
         }
         else
         {
@@ -52,5 +62,15 @@ public class TileObjectPlacer : MonoBehaviour
             _obstaclePool.GetObstacle().transform.position = _tileSelector.SelectedTilePos;
         }
     }
+
+    private void RemoveGoalTile()=>_isGoalPlaced = false;
+    private void RemoveStartTile()=>_isStartPlaced = false;
+
+    private void OnDestroy()
+    {
+        _goalTile.OnTileRemoved.RemoveListener(RemoveGoalTile);
+        _startTile.OnTileRemoved.RemoveListener(RemoveStartTile);
+    }
+
 }
 
