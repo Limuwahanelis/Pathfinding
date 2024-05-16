@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Shader Graphs_New Shader Graph
+  m_Name: Grid mat
   m_Shader: {fileID: -6465566751694194690, guid: 5d90fab01db34154d879a2380f511c71,
     type: 3}
   m_Parent: {fileID: 0}
@@ -43,7 +43,7 @@ Material:
     - _QueueOffset: -10
     - _grid: 0.863
     m_Colors:
-    - _Vector2: {r: 41, g: 6, b: 0, a: 0}
+    - _Vector2: {r: 4, g: 4, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &9062766989488653006
 MonoBehaviour:
