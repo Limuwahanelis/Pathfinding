@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UIElements;
 
 public class AStarPathfinding : MonoBehaviour
 {
+    public UnityEvent<List<Vector2Int>> OnPathCreated;
     public Vector2Int startTilePos;
     public Vector2Int endTilePos;
 
@@ -42,7 +44,9 @@ public class AStarPathfinding : MonoBehaviour
     }
     public void StartLooking()
     {
-        open = new List<PathFindingNode>();
+        if (!_tileObjectPlacer.IsGoalPlaced) return;
+        if (!_tileObjectPlacer.IsStartPlaced) return;
+            open = new List<PathFindingNode>();
         close = new List<PathFindingNode>();
         startNode.gcost = 0;
         startNode.hcost = Mathf.RoundToInt(Vector2.Distance(startTilePos, endTilePos) * 10);
@@ -70,18 +74,23 @@ public class AStarPathfinding : MonoBehaviour
             }
         }
         _pathPoints = new List<Vector2Int>();
-        current = endNode;
-        while(current!=null)
+        if (current == endNode)
         {
-            _pathPoints.Add(current.position);
-            Debug.Log(current.position);
-            current = current.previousNode;
+            while (current != null)
+            {
+                _pathPoints.Add(current.position);
+                Debug.Log(current.position);
+                current = current.previousNode;
+            }
         }
         _pathPoints.Reverse();
+        OnPathCreated?.Invoke(_pathPoints);
     }
 
     public void DivideMapIntoTiles()
     {
+        if (!_tileObjectPlacer.IsGoalPlaced) return;
+        if (!_tileObjectPlacer.IsStartPlaced) return;
         all = new List<List<PathFindingNode>>();
         for (int i = 0;i<gridSize.x;i++)
         {
@@ -118,7 +127,7 @@ public class AStarPathfinding : MonoBehaviour
                 if(j==0) all[i][j].neighbours[((int)Direction.DOWN)] = null;
                 else all[i][j].neighbours[((int)Direction.DOWN)] = all[i][j-1];
 
-                if(j == all.Count - 1) all[i][j].neighbours[((int)Direction.UP)] = null;
+                if(j == all[i].Count - 1) all[i][j].neighbours[((int)Direction.UP)] = null;
                 else all[i][j].neighbours[((int)Direction.UP)] = all[i][j+1];
             }
         }
