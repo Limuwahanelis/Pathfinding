@@ -18,6 +18,12 @@ public class TileSelection : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _lastPos.x = 0;
+        _lastPos.z = 0;
+        _tilePrefab.transform.position = new Vector3(0, 0.001f, 0);
+        _selectedTilePos.x = 0;
+        _selectedTilePos.y = 0.001f;
+        _selectedTilePos.z = 0;
         _tilePrefab.SetActive(true);
     }
 
