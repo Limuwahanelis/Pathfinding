@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fef75b7f8476104abd40b643d8fcc93, type: 3}
   m_Name: Simple obstacle
   m_EditorClassIdentifier: 
-  _obstaclePrefab: {fileID: 8076327522376417066, guid: f8b241ffe454d124585bbae67b0acd23,
+  _obstaclePrefab: {fileID: 8810869919477975808, guid: 383f4d0249b767a4f87bd0c137e41968,
     type: 3}

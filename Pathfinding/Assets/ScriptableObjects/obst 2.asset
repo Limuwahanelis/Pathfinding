@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fef75b7f8476104abd40b643d8fcc93, type: 3}
   m_Name: obst 2
   m_EditorClassIdentifier: 
-  _obstaclePrefab: {fileID: 939092653180926349, guid: 9f5e188002f14b042a12469a24e434de,
+  _obstaclePrefab: {fileID: 7435022973413397453, guid: 9f5e188002f14b042a12469a24e434de,
     type: 3}
