@@ -18,6 +18,7 @@ public class TileSelection : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _tilePrefab.SetActive(true);
     }
 
     // Update is called once per frame

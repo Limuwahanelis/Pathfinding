@@ -10,5 +10,5 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c18d0c5cb2ed7b54aab7f37db8e800bc, type: 3}
-  m_Name: Map
+  m_Name: Goal
   m_EditorClassIdentifier: 

@@ -10,15 +10,21 @@ public class ObstaclePool : MonoBehaviour
     private List<ObjectPool<Obstacle>> _obstaclePools;
     private ObstacleTileType _currentObstacleTileType;
     private List<Obstacle> _allActiveObstacles;
-    // Start is called before the first frame update
-    void Start()
+
+    private void Awake()
     {
         _allActiveObstacles = new List<Obstacle>();
         _obstaclePools = new List<ObjectPool<Obstacle>>(_obstacleTileTypes.Count);
-        for(int i=0;i<_obstacleTileTypes.Count;i++) 
+        for (int i = 0; i < _obstacleTileTypes.Count; i++)
         {
             _obstaclePools.Add(new ObjectPool<Obstacle>(CreateObstacle, OnTakeObstacleFromPool, OnReturnObstacleToPool));
         }
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+
     }
     public void SetCurrentObstacleType(ObstacleTileType obstacleTileType)
     {
@@ -55,5 +61,9 @@ public class ObstaclePool : MonoBehaviour
             positions.Add(new Vector2Int((int)obstacle.transform.position.x, (int)obstacle.transform.position.z));
         }
         return positions;
+    }
+    public List<Obstacle> GetAllActiveObstacles()
+    {
+        return _allActiveObstacles;
     }
 }
