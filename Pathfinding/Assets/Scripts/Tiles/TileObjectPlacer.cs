@@ -13,8 +13,9 @@ public class TileObjectPlacer : MonoBehaviour
     [SerializeField] TileType _goalTileType;
     [SerializeField] PathTargetTile _goalTile;
     [SerializeField] PathTargetTile _startTile;
+    [SerializeField] TileType _removeTile;
     [SerializeField] ObstaclePool _obstaclePool;
-    private TileType _tileToPlace;
+    private TileType? _tileToPlace;
     private bool _isGoalPlaced;
     private bool _isStartPlaced;
     // Start is called before the first frame update
@@ -22,7 +23,7 @@ public class TileObjectPlacer : MonoBehaviour
     {
         _goalTile.OnTileRemoved.AddListener(RemoveGoalTile);
         _startTile.OnTileRemoved.AddListener(RemoveStartTile);
-        _tileToPlace = _goalTileType;
+        _tileToPlace = null;
     }
 
     // Update is called once per frame
@@ -44,6 +45,7 @@ public class TileObjectPlacer : MonoBehaviour
         Debug.Log(_tileSelector.SelectedTile);
 
         if(_tileSelector.SelectedTile !=null) _tileSelector.SelectedTile.RemoveTile();
+        if (_tileToPlace == _removeTile) return;
         if (_tileToPlace == _goalTileType)
         {
             _goalTile.transform.position = _tileSelector.SelectedTilePos;
