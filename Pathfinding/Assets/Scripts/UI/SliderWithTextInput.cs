@@ -10,16 +10,17 @@ public class SliderWithTextInput : MonoBehaviour
 {
     [SerializeField] TMP_InputField _inputTextField;
     [SerializeField] Slider _slider;
-    [SerializeField] float _minValue;
-    [SerializeField] float _maxValue;
-    [SerializeField] float _defaultValue;
     [SerializeField] bool _wholeNumbers;
     [SerializeField] bool _defaultDecimal;
+    [SerializeField] float _minValue;
+    [SerializeField] float _maxValue;
+    [SerializeField,HideInInspector] float _defaultValue;
     // Start is called before the first frame update
     void Start()
     {
         _slider.minValue = _minValue;
         _slider.maxValue = _maxValue;
+        _slider.value = _defaultValue;
     }
     public void UpdateSlider(string text)
     {
