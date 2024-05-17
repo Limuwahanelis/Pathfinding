@@ -27,7 +27,8 @@ public class SliderWithTextInput : MonoBehaviour
         float value;
         if (string.IsNullOrEmpty(text)) value = _minValue;
         else value = float.Parse(text);
-        _slider.SetValueWithoutNotify(value);
+        //_slider.SetValueWithoutNotify(value);
+        _slider.value = value;
     }
     public void UpdateText(float value)
     {
