@@ -8,78 +8,80 @@ using UnityEngine.UIElements;
 public class AStarPathfinding : MonoBehaviour
 {
     public UnityEvent<List<Vector2Int>> OnPathCreated;
-    public Vector2Int startTilePos;
-    public Vector2Int endTilePos;
 
-    public PathFindingNode startNode;
-    public PathFindingNode endNode;
-
-    public List<PathFindingNode> open;
-    public List<PathFindingNode> close;
-    public List<List<PathFindingNode>> all;
-    public List<Vector2Int> obstaclesPos;
-
-    public Vector2Int gridSize;
     [SerializeField] ObstaclePool _obstaclePool;
     [SerializeField] TileObjectPlacer _tileObjectPlacer;
     [SerializeField] TileMapSetter _tileMapSetter;
 
+    private Vector2Int _gridSize;
+
+    private Vector2Int _startTilePos;
+    private Vector2Int _endTilePos;
+
+    private PathFindingNode _startNode;
+    private PathFindingNode _endNode;
+
+    private List<PathFindingNode> _open;
+    private List<PathFindingNode> _close;
+    private List<List<PathFindingNode>> _all;
+    private List<Vector2Int> _obstaclesPos;
     private List<Vector2Int> _pathPoints;
+
+
     enum Direction
     {
         UP,RIGHT,DOWN,LEFT
     }
     public void SetObstacles()
     {
-        this.obstaclesPos = new List<Vector2Int>( _obstaclePool.GetAllActiveObstaclePositions());
+        this._obstaclesPos = new List<Vector2Int>( _obstaclePool.GetAllActiveObstaclePositions());
     }
     public void SetTargetTiles()
     {
-        if (_tileObjectPlacer.IsGoalPlaced) endTilePos =new Vector2Int( ((int)_tileObjectPlacer.GoalTile.transform.position.x), ((int)_tileObjectPlacer.GoalTile.transform.position.z));
-        if (_tileObjectPlacer.IsStartPlaced) startTilePos = new Vector2Int(((int)_tileObjectPlacer.StartTile.transform.position.x), ((int)_tileObjectPlacer.StartTile.transform.position.z));
+        if (_tileObjectPlacer.IsGoalPlaced) _endTilePos =new Vector2Int( ((int)_tileObjectPlacer.GoalTile.transform.position.x), ((int)_tileObjectPlacer.GoalTile.transform.position.z));
+        if (_tileObjectPlacer.IsStartPlaced) _startTilePos = new Vector2Int(((int)_tileObjectPlacer.StartTile.transform.position.x), ((int)_tileObjectPlacer.StartTile.transform.position.z));
     }
     public void SetGridSize()
     {
-        gridSize =new Vector2Int( ((int)_tileMapSetter.GridSize.x), ((int)_tileMapSetter.GridSize.y));
+        _gridSize =new Vector2Int( ((int)_tileMapSetter.GridSize.x), ((int)_tileMapSetter.GridSize.y));
     }
     public void StartLooking()
     {
         if (!_tileObjectPlacer.IsGoalPlaced) return;
         if (!_tileObjectPlacer.IsStartPlaced) return;
-            open = new List<PathFindingNode>();
-        close = new List<PathFindingNode>();
-        startNode.gcost = 0;
-        startNode.hcost = Mathf.RoundToInt(Vector2.Distance(startTilePos, endTilePos) * 10);
+            _open = new List<PathFindingNode>();
+        _close = new List<PathFindingNode>();
+        _startNode.gcost = 0;
+        _startNode.hcost = Mathf.RoundToInt(Vector2.Distance(_startTilePos, _endTilePos) * 10);
         //startTile.fcost = startTile.gcost + 
-        open.Add(startNode);
+        _open.Add(_startNode);
         PathFindingNode current = null;
-        while (open.Count>0)
+        while (_open.Count>0)
         {
-            current = FindNodeWithLowestFCost(open);
-            open.Remove(current);
-            close.Add(current);
+            current = FindNodeWithLowestFCost(_open);
+            _open.Remove(current);
+            _close.Add(current);
 
-            if (current == endNode) break;
+            if (current == _endNode) break;
 
             foreach (PathFindingNode node in current.neighbours)
             {
-                if (node == null ||!node.traversable || close.Exists((x) => x == node) ) continue;
-                bool isNodeInOpen = open.Exists((x) => x == node);
+                if (node == null ||!node.traversable || _close.Exists((x) => x == node) ) continue;
+                bool isNodeInOpen = _open.Exists((x) => x == node);
                 if (!isNodeInOpen || current.gcost+Mathf.RoundToInt(Vector2.Distance(current.position, node.position) * 10)<node.gcost)
                 {
-                    node.VisitNode(current, endNode);
-                    if (!isNodeInOpen) open.Add(node);
+                    node.VisitNode(current, _endNode);
+                    if (!isNodeInOpen) _open.Add(node);
                 }
 
             }
         }
         _pathPoints = new List<Vector2Int>();
-        if (current == endNode)
+        if (current == _endNode)
         {
             while (current != null)
             {
                 _pathPoints.Add(current.position);
-                Debug.Log(current.position);
                 current = current.previousNode;
             }
         }
@@ -91,21 +93,21 @@ public class AStarPathfinding : MonoBehaviour
     {
         if (!_tileObjectPlacer.IsGoalPlaced) return;
         if (!_tileObjectPlacer.IsStartPlaced) return;
-        all = new List<List<PathFindingNode>>();
-        for (int i = 0;i<gridSize.x;i++)
+        _all = new List<List<PathFindingNode>>();
+        for (int i = 0;i<_gridSize.x;i++)
         {
-            all.Add(new List<PathFindingNode>());
-            for(int j = 0;j<gridSize.y;j++)
+            _all.Add(new List<PathFindingNode>());
+            for(int j = 0;j<_gridSize.y;j++)
             {
-                all[i].Add(new PathFindingNode(i, j));
-                if (i == startTilePos.x && j == startTilePos.y) startNode = all[i][j];
-                if( i == endTilePos.x &&j == endTilePos.y) endNode = all[i][j];
+                _all[i].Add(new PathFindingNode(i, j));
+                if (i == _startTilePos.x && j == _startTilePos.y) _startNode = _all[i][j];
+                if( i == _endTilePos.x &&j == _endTilePos.y) _endNode = _all[i][j];
                 
-                if (obstaclesPos.Exists((vec) => vec.x == i && vec.y == j)) 
+                if (_obstaclesPos.Exists((vec) => vec.x == i && vec.y == j)) 
                 {
-                    Vector2Int obstaclepos = obstaclesPos.Find((vec) => vec.x == i && vec.y == j);
-                    all[i][j].traversable = false;
-                    obstaclesPos.Remove(obstaclepos);
+                    Vector2Int obstaclepos = _obstaclesPos.Find((vec) => vec.x == i && vec.y == j);
+                    _all[i][j].traversable = false;
+                    _obstaclesPos.Remove(obstaclepos);
                 }
             }
         }
@@ -114,21 +116,21 @@ public class AStarPathfinding : MonoBehaviour
 
     private void AssignNeighbours()
     {
-        for (int i = 0; i < all.Count; i++)
+        for (int i = 0; i < _all.Count; i++)
         {
-            for(int j = 0; j < all[i].Count; j++)
+            for(int j = 0; j < _all[i].Count; j++)
             {
-                if (i == 0) all[i][j].neighbours[((int)Direction.LEFT)] = null;
-                else all[i][j].neighbours[((int)Direction.LEFT)] = all[i - 1][j];
+                if (i == 0) _all[i][j].neighbours[((int)Direction.LEFT)] = null;
+                else _all[i][j].neighbours[((int)Direction.LEFT)] = _all[i - 1][j];
 
-                if(i== all.Count-1) all[i][j].neighbours[((int)Direction.RIGHT)] = null;
-                else all[i][j].neighbours[((int)Direction.RIGHT)] = all[i+1][j];
+                if(i== _all.Count-1) _all[i][j].neighbours[((int)Direction.RIGHT)] = null;
+                else _all[i][j].neighbours[((int)Direction.RIGHT)] = _all[i+1][j];
 
-                if(j==0) all[i][j].neighbours[((int)Direction.DOWN)] = null;
-                else all[i][j].neighbours[((int)Direction.DOWN)] = all[i][j-1];
+                if(j==0) _all[i][j].neighbours[((int)Direction.DOWN)] = null;
+                else _all[i][j].neighbours[((int)Direction.DOWN)] = _all[i][j-1];
 
-                if(j == all[i].Count - 1) all[i][j].neighbours[((int)Direction.UP)] = null;
-                else all[i][j].neighbours[((int)Direction.UP)] = all[i][j+1];
+                if(j == _all[i].Count - 1) _all[i][j].neighbours[((int)Direction.UP)] = null;
+                else _all[i][j].neighbours[((int)Direction.UP)] = _all[i][j+1];
             }
         }
     }
