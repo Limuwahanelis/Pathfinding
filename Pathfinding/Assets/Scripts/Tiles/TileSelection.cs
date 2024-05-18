@@ -14,6 +14,7 @@ public class TileSelection : MonoBehaviour
     private Vector3 _selectedTilePos;
     private Vector3 _lastPos;
     private bool _isHittingMap;
+    private Vector2 _mousePos;
     private Ray r;
     // Start is called before the first frame update
     void Start()
@@ -32,7 +33,7 @@ public class TileSelection : MonoBehaviour
     {
 
         RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = Camera.main.ScreenPointToRay(_mousePos);
         r = ray;
         if (_isHittingMap=Physics.Raycast(ray, out hit, Mathf.Infinity, _mask))
         {
@@ -52,6 +53,10 @@ public class TileSelection : MonoBehaviour
             _selectedObject = hit.transform.gameObject.GetComponent<MapTile>();
         }
 
+    }
+    public void SetMousePos(Vector2 pos)
+    {
+        _mousePos = pos;
     }
     private void OnDrawGizmos()
     {
