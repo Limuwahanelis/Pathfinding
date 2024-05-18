@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class TileObjectPlacer : MonoBehaviour
 {
+    public UnityEvent<MapTile> OnTilePlaced;
     public bool IsGoalPlaced=>_isGoalPlaced;
     public bool IsStartPlaced=>_isStartPlaced;
     public PathTargetTile GoalTile=>_goalTile;
@@ -11,9 +13,9 @@ public class TileObjectPlacer : MonoBehaviour
     [SerializeField] TileSelection _tileSelector;
     [SerializeField] TileType _startTileType;
     [SerializeField] TileType _goalTileType;
+    [SerializeField] TileType _removeTile;
     [SerializeField] PathTargetTile _goalTile;
     [SerializeField] PathTargetTile _startTile;
-    [SerializeField] TileType _removeTile;
     [SerializeField] ObstaclePool _obstaclePool;
     [SerializeField] TileMapSetter _map;
     private TileType _tileToPlace;
@@ -30,11 +32,6 @@ public class TileObjectPlacer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetMouseButtonDown(0))
-        {
-            if(_tileSelector.IsHittingMap) PlaceTile();
-
-        }
     }
 
     public void SetTileTypeToPlace(TileType type)
@@ -43,27 +40,35 @@ public class TileObjectPlacer : MonoBehaviour
     }
     public void PlaceTile()
     {
-        Debug.Log(_tileSelector.SelectedTile);
+        if (!_tileSelector.IsHittingMap) return;
 
         if(_tileSelector.SelectedTile !=null) _tileSelector.SelectedTile.RemoveTile();
         if (_tileToPlace == _removeTile) return;
+
         if (_tileToPlace == _goalTileType)
         {
+            _goalTile.RemoveTile();
             _goalTile.transform.position = _tileSelector.SelectedTilePos;
             _goalTile.gameObject.SetActive(true);
             _isGoalPlaced = true;
+            OnTilePlaced?.Invoke(_goalTile);
         }
         else if (_tileToPlace == _startTileType) 
         {
+            _startTile.RemoveTile();
             _startTile.transform.position = _tileSelector.SelectedTilePos;
             _startTile.gameObject.SetActive(true);
             _isStartPlaced = true;
+            OnTilePlaced?.Invoke(_startTile);
         }
         else
         {
-            _obstaclePool.SetCurrentObstacleType((ObstacleTileType)_tileToPlace);
-            _obstaclePool.GetObstacle().transform.position = _tileSelector.SelectedTilePos;
+           _obstaclePool.SetCurrentObstacleType((ObstacleTileType)_tileToPlace);
+            MapTile tile = _obstaclePool.GetObstacle();
+            tile.transform.position = _tileSelector.SelectedTilePos;
+            OnTilePlaced?.Invoke(tile);
         }
+        
     }
     public void HideTilesOutsideMap()
     {
