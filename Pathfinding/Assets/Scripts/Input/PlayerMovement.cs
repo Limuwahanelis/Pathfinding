@@ -21,7 +21,10 @@ public class PlayerMovement : MonoBehaviour
     {
         
     }
-
+    public void SetMoveSpeed(float newSpeed)
+    {
+        _moveSpeed = newSpeed;
+    }
     public void Move(Vector2 direction)
     {
         transform.Translate(direction.x * Time.deltaTime * _moveSpeed, 0, direction.y * Time.deltaTime * _moveSpeed);
