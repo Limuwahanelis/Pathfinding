@@ -7,8 +7,13 @@ public class PlayerInputHandler : MonoBehaviour
 {
     [SerializeField] PlayerMovement _playerMovement;
     [SerializeField] PlayerRotation _playerRotation;
-    Vector2 _direction;
-    bool _canRotate = false;
+    [SerializeField] TileObjectPlacer _tileObjectPlacer;
+    [SerializeField] ExitApp _exitApp;
+    [SerializeField] TileSelection _tileSelection;
+    private Vector2 _direction;
+    private bool _canRotate = false;
+    private bool _showExitPanel = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -18,6 +23,7 @@ public class PlayerInputHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (_showExitPanel) return;
         _playerMovement.Move(_direction);
     }
 
@@ -28,10 +34,34 @@ public class PlayerInputHandler : MonoBehaviour
     }
     public void OnLook(InputValue value)
     {
-        if(_canRotate) _playerRotation.RotateMouse(value.Get<Vector2>());
+        if (_showExitPanel) return;
+        if (_canRotate) _playerRotation.RotateMouse(value.Get<Vector2>());
     }
     public void OnLockRotation(InputValue value)
     {
         _canRotate = value.Get<float>()>=1?true:false;
+    }
+
+    public void OnExit(InputValue value)
+    {
+        _showExitPanel = !_showExitPanel;
+        if(_showExitPanel)
+        {
+            //_canRotate = false;
+            //_direction = Vector2.zero;
+        }
+        _exitApp.SetExitPanel(_showExitPanel);
+    }
+
+    public void OnFire()
+    {
+        if (_showExitPanel) return;
+        _tileObjectPlacer.PlaceTile();
+    }
+
+    public void OnCursor(InputValue value)
+    {
+        if (_showExitPanel) return;
+        _tileSelection.SetMousePos(value.Get<Vector2>());
     }
 }
