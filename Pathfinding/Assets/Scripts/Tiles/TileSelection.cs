@@ -10,6 +10,7 @@ public class TileSelection : MonoBehaviour
     public MapTile SelectedTile => _selectedObject;
     [SerializeField] GameObject _tilePrefab;
     [SerializeField] LayerMask _mask;
+    [SerializeField] TileMapSetter _map;
     private MapTile _selectedObject;
     private Vector3 _selectedTilePos;
     private Vector3 _lastPos;
@@ -53,6 +54,10 @@ public class TileSelection : MonoBehaviour
             _selectedObject = hit.transform.gameObject.GetComponent<MapTile>();
         }
 
+    }
+    public void CheckIfSelectionIsInGrid()
+    {
+        if (_tilePrefab.transform.position.x > _map.GridSize.x - 1 || _tilePrefab.transform.position.z > _map.GridSize.y - 1) _tilePrefab.transform.position = new Vector3(0, 0.001f, 0);
     }
     public void SetMousePos(Vector2 pos)
     {
