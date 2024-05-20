@@ -2,6 +2,6 @@
  
 Controls:
 
-WASD or arrows - move around
-Right mouse buton - rotate camera
-Left mouse button - place tiles
+WASD or arrows - move around <br />
+Right mouse buton - rotate camera <br />
+Left mouse button - place tiles <br />
