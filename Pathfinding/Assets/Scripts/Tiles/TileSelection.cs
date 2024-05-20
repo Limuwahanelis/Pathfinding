@@ -17,6 +17,7 @@ public class TileSelection : MonoBehaviour
     private bool _isHittingMap;
     private Vector2 _mousePos;
     private Ray r;
+    private bool _canHitMap=true;
     // Start is called before the first frame update
     void Start()
     {
@@ -32,6 +33,7 @@ public class TileSelection : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!_canHitMap) return;
 
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(_mousePos);
@@ -62,6 +64,12 @@ public class TileSelection : MonoBehaviour
     public void SetMousePos(Vector2 pos)
     {
         _mousePos = pos;
+
+    }
+    public void SetCanHitMap(bool value)
+    {
+        _canHitMap = value;
+        if (!_canHitMap) _isHittingMap = false;
     }
     private void OnDrawGizmos()
     {
