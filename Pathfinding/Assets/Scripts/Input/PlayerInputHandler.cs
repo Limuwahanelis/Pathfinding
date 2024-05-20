@@ -17,7 +17,7 @@ public class PlayerInputHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Cursor.lockState = CursorLockMode.Confined;
     }
 
     // Update is called once per frame
@@ -45,11 +45,7 @@ public class PlayerInputHandler : MonoBehaviour
     public void OnExit(InputValue value)
     {
         _showExitPanel = !_showExitPanel;
-        if(_showExitPanel)
-        {
-            //_canRotate = false;
-            //_direction = Vector2.zero;
-        }
+        Cursor.lockState = _showExitPanel?CursorLockMode.None:CursorLockMode.Confined;
         _exitApp.SetExitPanel(_showExitPanel);
     }
 
